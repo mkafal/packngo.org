@@ -623,6 +623,112 @@
     }
     .footer-bottom a { color: var(--red); }
 
+    /* ─── SOCIAL SECTION ────────────────────────────────── */
+    .social-section { padding: 80px 0; background: var(--off-white); }
+    .social-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 52px;
+    }
+    .social-card {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      padding: 48px 44px;
+      display: flex;
+      flex-direction: column;
+      min-height: 320px;
+      text-decoration: none;
+      transition: transform .3s ease, box-shadow .3s ease;
+      cursor: pointer;
+    }
+    .social-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,.18); }
+
+    /* Instagram gradient */
+    .social-card--ig { background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+    /* TikTok dark */
+    .social-card--tt { background: linear-gradient(135deg, #010101 0%, #1a1a2e 60%, #16213e 100%); }
+
+    .social-card-bg {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity .3s ease;
+      background: rgba(255,255,255,.07);
+    }
+    .social-card:hover .social-card-bg { opacity: 1; }
+
+    /* Decorative circles */
+    .social-card-deco {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.12);
+      pointer-events: none;
+    }
+    .social-deco-1 { width: 220px; height: 220px; top: -60px; right: -60px; }
+    .social-deco-2 { width: 140px; height: 140px; bottom: -40px; left: -40px; }
+
+    .social-card-content { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; }
+
+    .social-platform-icon {
+      width: 60px; height: 60px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.18);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+      transition: transform .3s ease;
+    }
+    .social-card:hover .social-platform-icon { transform: scale(1.1) rotate(-4deg); }
+
+    .social-card-handle {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: rgba(255,255,255,.75);
+      margin-bottom: 4px;
+      letter-spacing: .01em;
+    }
+    .social-card-name {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      color: white;
+      font-weight: 700;
+      margin-bottom: 14px;
+      line-height: 1;
+    }
+    .social-card-desc {
+      font-size: .95rem;
+      color: rgba(255,255,255,.7);
+      line-height: 1.65;
+      flex: 1;
+      margin-bottom: 28px;
+    }
+    .social-card-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.18);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(255,255,255,.35);
+      color: white;
+      font-size: .9rem;
+      font-weight: 700;
+      padding: 12px 22px;
+      border-radius: 10px;
+      width: fit-content;
+      transition: background .25s ease, transform .25s ease;
+    }
+    .social-card:hover .social-card-btn { background: rgba(255,255,255,.28); transform: translateX(4px); }
+
+    /* TikTok accent color on handle */
+    .social-card--tt .social-card-handle { color: #69C9D0; }
+
+    @media (max-width: 640px) {
+      .social-cards { grid-template-columns: 1fr; }
+      .social-card { min-height: 260px; padding: 36px 28px; }
+    }
+
     /* ─── TRAVEL ANIMATIONS ─────────────────────────────── */
 
     /* Flying plane */
@@ -1142,6 +1248,58 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SOCIAL ══════════════════════════════════════════════ -->
+  <section class="social-section">
+    <div class="container">
+      <div class="section-header centered reveal">
+        <span class="section-label">Follow the Journey</span>
+        <h2 class="section-title">We're Live on Social</h2>
+        <p class="section-sub">Behind-the-scenes trips, travel inspo, and exclusive deals — follow us for your daily dose of wanderlust.</p>
+      </div>
+      <div class="social-cards reveal">
+
+        <!-- Instagram Card -->
+        <a href="https://www.instagram.com/packngo.agency" target="_blank" rel="noopener" class="social-card social-card--ig">
+          <div class="social-card-bg"></div>
+          <div class="social-card-content">
+            <div class="social-platform-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="32" height="32"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="white" stroke="none"/></svg>
+            </div>
+            <div class="social-card-handle">@packngo.agency</div>
+            <div class="social-card-name">Instagram</div>
+            <p class="social-card-desc">Travel reels, destination highlights & exclusive package previews</p>
+            <div class="social-card-btn">
+              <span>Follow on Instagram</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+            </div>
+          </div>
+          <div class="social-card-deco social-deco-1"></div>
+          <div class="social-card-deco social-deco-2"></div>
+        </a>
+
+        <!-- TikTok Card -->
+        <a href="https://www.tiktok.com/@packngoagency" target="_blank" rel="noopener" class="social-card social-card--tt">
+          <div class="social-card-bg"></div>
+          <div class="social-card-content">
+            <div class="social-platform-icon">
+              <svg viewBox="0 0 24 24" fill="white" width="32" height="32"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.84 1.56V6.79a4.85 4.85 0 01-1.07-.1z"/></svg>
+            </div>
+            <div class="social-card-handle">@packngoagency</div>
+            <div class="social-card-name">TikTok</div>
+            <p class="social-card-desc">Short travel vlogs, hidden gems & trip inspiration you can't miss</p>
+            <div class="social-card-btn">
+              <span>Follow on TikTok</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+            </div>
+          </div>
+          <div class="social-card-deco social-deco-1"></div>
+          <div class="social-card-deco social-deco-2"></div>
+        </a>
+
       </div>
     </div>
   </section>
