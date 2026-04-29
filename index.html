@@ -233,66 +233,462 @@
     }
     .hero-stat-divider { width: 1px; background: rgba(255,255,255,.25); }
 
-    /* ─── SEARCH BAR ─────────────────────────────────────── */
-    .search-wrap {
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
-      padding: 28px 32px;
-      margin: -48px auto 80px;
-      max-width: 900px;
+    /* ─── FLIGHT SEARCH ──────────────────────────────────── */
+    .flight-search-section {
+      background: linear-gradient(160deg, var(--navy-dark) 0%, var(--navy) 100%);
+      padding: 64px 0 80px;
       position: relative;
-      z-index: 10;
+      overflow: hidden;
     }
-    .search-tabs {
+    .flight-search-section::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: rgba(204,32,51,.12);
+    }
+    .flight-search-section::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -60px;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.04);
+    }
+    .flight-search-header { text-align: center; margin-bottom: 40px; }
+    .flight-search-header h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+      color: white;
+      margin-bottom: 10px;
+    }
+    .flight-search-header p { color: rgba(255,255,255,.6); font-size: .95rem; }
+
+    .flight-card {
+      background: white;
+      border-radius: 20px;
+      padding: 32px 36px;
+      max-width: 980px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 24px 60px rgba(0,0,0,.25);
+    }
+
+    /* Trip type toggle */
+    .trip-toggle {
       display: flex;
-      gap: 4px;
-      margin-bottom: 20px;
-      background: var(--gray-100);
-      padding: 4px;
-      border-radius: 8px;
-      width: fit-content;
+      gap: 6px;
+      margin-bottom: 28px;
     }
-    .search-tab {
+    .trip-btn {
       padding: 7px 18px;
+      border-radius: 999px;
+      border: 1.5px solid var(--gray-300);
+      background: transparent;
       font-size: .85rem;
       font-weight: 600;
-      border-radius: 6px;
-      cursor: pointer;
       color: var(--gray-500);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-sans);
+    }
+    .trip-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+    /* Main search row */
+    .flight-row-1 {
+      display: grid;
+      grid-template-columns: 1fr 44px 1fr;
+      gap: 0;
+      align-items: stretch;
+      margin-bottom: 16px;
+      border: 1.5px solid var(--gray-300);
+      border-radius: 12px;
+      overflow: visible;
+    }
+    .airport-field {
+      padding: 14px 18px;
+      cursor: pointer;
+      position: relative;
+      transition: background var(--transition);
+    }
+    .airport-field:first-child { border-radius: 12px 0 0 12px; }
+    .airport-field:last-child  { border-radius: 0 12px 12px 0; border-left: 1.5px solid var(--gray-300); }
+    .airport-field:hover, .airport-field:focus-within { background: var(--off-white); }
+    .airport-field label {
+      display: block;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--gray-500);
+      margin-bottom: 5px;
+    }
+    .airport-code {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1;
+    }
+    .airport-city { font-size: .82rem; color: var(--gray-500); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .airport-input-wrap { position: relative; }
+    .airport-input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
       border: none;
       background: transparent;
-      transition: var(--transition);
+      outline: none;
+      font-family: var(--font-sans);
+      font-size: .95rem;
+      color: var(--gray-900);
+      padding: 30px 18px 10px;
+      cursor: pointer;
     }
-    .search-tab.active { background: var(--white); color: var(--red); box-shadow: var(--shadow-sm); }
-    .search-fields {
+
+    /* Swap button */
+    .swap-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--red);
+      border: none;
+      cursor: pointer;
+      transition: transform var(--transition), background var(--transition);
+      z-index: 2;
+      position: relative;
+    }
+    .swap-btn:hover { background: var(--red-dark); transform: rotate(180deg); }
+    .swap-btn svg { fill: white; width: 18px; height: 18px; }
+
+    /* Dates + passengers row */
+    .flight-row-2 {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr auto;
+      grid-template-columns: 1fr 1fr 1fr 1fr auto;
       gap: 12px;
       align-items: end;
     }
-    .search-field label {
+    .flight-field {
+      border: 1.5px solid var(--gray-300);
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+      position: relative;
+    }
+    .flight-field:hover, .flight-field:focus-within { border-color: var(--navy); background: var(--off-white); }
+    .flight-field label {
       display: block;
-      font-size: .78rem;
-      font-weight: 600;
-      color: var(--gray-500);
+      font-size: .72rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: .08em;
+      letter-spacing: .1em;
+      color: var(--gray-500);
+      margin-bottom: 5px;
+      pointer-events: none;
+    }
+    .flight-field input[type="date"], .flight-field select {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--font-sans);
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      cursor: pointer;
+    }
+    .flight-field-value {
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    /* Passenger dropdown */
+    .pax-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      width: 260px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      border: 1.5px solid var(--gray-100);
+      padding: 16px;
+      z-index: 50;
+      display: none;
+    }
+    .pax-dropdown.open { display: block; }
+    .pax-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .pax-row:last-child { border-bottom: none; }
+    .pax-label { font-size: .9rem; font-weight: 600; color: var(--gray-700); }
+    .pax-sublabel { font-size: .75rem; color: var(--gray-500); }
+    .pax-counter { display: flex; align-items: center; gap: 12px; }
+    .pax-btn {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gray-300);
+      background: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--transition);
+      line-height: 1;
+      font-family: var(--font-sans);
+    }
+    .pax-btn:hover { border-color: var(--red); color: var(--red); }
+    .pax-count { font-size: 1rem; font-weight: 700; color: var(--navy); min-width: 16px; text-align: center; }
+
+    /* Airport autocomplete dropdown */
+    .airport-suggestions {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: -1px;
+      right: -1px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      border: 1.5px solid var(--gray-100);
+      z-index: 100;
+      max-height: 260px;
+      overflow-y: auto;
+      display: none;
+    }
+    .airport-suggestions.open { display: block; }
+    .airport-suggestion {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 16px;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+    .airport-suggestion:hover { background: var(--off-white); }
+    .sug-code {
+      font-size: .85rem;
+      font-weight: 800;
+      color: var(--red);
+      min-width: 38px;
+    }
+    .sug-info { flex: 1; }
+    .sug-city { font-size: .9rem; font-weight: 600; color: var(--gray-900); }
+    .sug-name { font-size: .78rem; color: var(--gray-500); }
+    .sug-country { font-size: .78rem; color: var(--gray-400); margin-left: auto; }
+
+    /* Search button */
+    .flight-search-btn {
+      background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0 28px;
+      height: 54px;
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: var(--transition);
+      font-family: var(--font-sans);
+      box-shadow: 0 4px 16px rgba(204,32,51,.35);
+    }
+    .flight-search-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(204,32,51,.45); }
+    .flight-search-btn svg { fill: white; width: 18px; height: 18px; }
+
+    /* ── SEARCH MODAL ─────────── */
+    .search-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(18,40,80,.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .35s ease;
+    }
+    .search-modal-overlay.open { opacity: 1; pointer-events: all; }
+    .search-modal {
+      background: white;
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      transform: translateY(24px) scale(.96);
+      transition: transform .35s cubic-bezier(.175,.885,.32,1.275);
+      position: relative;
+    }
+    .search-modal-overlay.open .search-modal { transform: none; }
+
+    /* Searching state */
+    .modal-searching { display: block; }
+    .modal-result    { display: none; }
+    .search-modal.result .modal-searching { display: none; }
+    .search-modal.result .modal-result    { display: block; }
+
+    .modal-plane-wrap {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      animation: modal-plane-spin 2s linear infinite;
+    }
+    @keyframes modal-plane-spin {
+      0%,100% { transform: rotate(-10deg) scale(1); }
+      50%      { transform: rotate(10deg) scale(1.05); }
+    }
+    .modal-plane-wrap svg { fill: white; width: 36px; height: 36px; }
+
+    .modal-route {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: .05em;
       margin-bottom: 6px;
     }
-    .search-field input, .search-field select {
-      width: 100%;
-      padding: 11px 14px;
-      border: 1.5px solid var(--gray-300);
-      border-radius: 8px;
-      font-size: .95rem;
-      font-family: var(--font-sans);
-      color: var(--gray-900);
-      background: var(--white);
-      transition: border-color var(--transition);
-      outline: none;
+    .modal-dates { font-size: .9rem; color: var(--gray-500); margin-bottom: 28px; }
+
+    .search-progress { margin-bottom: 10px; }
+    .progress-bar-track {
+      height: 6px;
+      background: var(--gray-100);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 12px;
     }
-    .search-field input:focus, .search-field select:focus { border-color: var(--red); }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--red), var(--navy));
+      border-radius: 999px;
+      width: 0%;
+      transition: width .4s ease;
+    }
+    .progress-label {
+      font-size: .85rem;
+      color: var(--gray-500);
+      min-height: 20px;
+    }
+    .progress-steps {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .progress-step {
+      font-size: .75rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--gray-100);
+      color: var(--gray-500);
+      transition: var(--transition);
+    }
+    .progress-step.done { background: var(--navy); color: white; }
+
+    /* Result state */
+    .result-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      display: block;
+      animation: pop-in .4s cubic-bezier(.175,.885,.32,1.275) both;
+    }
+    @keyframes pop-in {
+      from { transform: scale(0) rotate(-20deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0); opacity: 1; }
+    }
+    .result-headline {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+    .result-route-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--navy);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 18px;
+    }
+    .result-body {
+      font-size: .95rem;
+      color: var(--gray-500);
+      line-height: 1.7;
+      margin-bottom: 28px;
+      padding: 0 8px;
+    }
+    .result-body strong { color: var(--gray-900); }
+    .whatsapp-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #25D366;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 16px 32px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      text-decoration: none;
+      font-family: var(--font-sans);
+      transition: var(--transition);
+      box-shadow: 0 4px 20px rgba(37,211,102,.35);
+      animation: pop-in .4s .2s cubic-bezier(.175,.885,.32,1.275) both;
+    }
+    .whatsapp-cta-btn:hover { background: #1ebe5d; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,211,102,.45); }
+    .whatsapp-cta-btn svg { fill: white; width: 22px; height: 22px; }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: var(--gray-100);
+      color: var(--gray-500);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--transition);
+      font-family: var(--font-sans);
+    }
+    .modal-close:hover { background: var(--gray-300); color: var(--gray-900); }
+
+    @media (max-width: 860px) {
+      .flight-row-1 { grid-template-columns: 1fr 40px 1fr; }
+      .flight-row-2 { grid-template-columns: 1fr 1fr; }
+      .flight-search-btn { grid-column: 1 / -1; justify-content: center; }
+    }
+    @media (max-width: 580px) {
+      .flight-card { padding: 24px 20px; }
+      .flight-row-1 { grid-template-columns: 1fr; border: none; gap: 10px; }
+      .airport-field { border: 1.5px solid var(--gray-300); border-radius: 12px !important; }
+      .swap-btn { display: none; }
+      .flight-row-2 { grid-template-columns: 1fr 1fr; }
+      .search-modal { padding: 36px 24px; }
+    }
 
     /* ─── DESTINATIONS ───────────────────────────────────── */
     .destinations { padding: 80px 0; background: var(--white); }
@@ -972,33 +1368,143 @@
     </div>
   </section>
 
-  <!-- ═══ SEARCH ═════════════════════════════════════════════ -->
-  <div class="container">
-    <div class="search-wrap reveal">
-      <div class="search-tabs">
-        <button class="search-tab active">✈ Flights</button>
-        <button class="search-tab">🏨 Hotels</button>
-        <button class="search-tab">🧳 Packages</button>
+  <!-- ═══ FLIGHT SEARCH ════════════════════════════════════ -->
+  <section class="flight-search-section" id="search">
+    <div class="container">
+      <div class="flight-search-header reveal">
+        <h2>Search Flights Worldwide</h2>
+        <p>Enter your route and let our experts hand-pick the best deal for you</p>
       </div>
-      <div class="search-fields">
-        <div class="search-field">
-          <label>Destination</label>
-          <input type="text" placeholder="Where to?" />
+      <div class="flight-card reveal">
+
+        <!-- Trip type -->
+        <div class="trip-toggle">
+          <button class="trip-btn active" data-trip="round">⇄ Round Trip</button>
+          <button class="trip-btn" data-trip="one">→ One Way</button>
+          <button class="trip-btn" data-trip="multi">+ Multi-City</button>
         </div>
-        <div class="search-field">
-          <label>Departure</label>
-          <input type="date" />
+
+        <!-- Row 1: From / Swap / To -->
+        <div class="flight-row-1">
+          <div class="airport-field" id="from-field">
+            <label>From</label>
+            <div class="airport-code" id="from-code">BEY</div>
+            <div class="airport-city" id="from-city">Beirut Rafic Hariri, Lebanon</div>
+            <input class="airport-input" id="from-input" type="text" placeholder="Search airport…" autocomplete="off" />
+            <div class="airport-suggestions" id="from-suggestions"></div>
+          </div>
+          <button class="swap-btn" id="swap-btn" title="Swap airports">
+            <svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg>
+          </button>
+          <div class="airport-field" id="to-field">
+            <label>To</label>
+            <div class="airport-code" id="to-code">—</div>
+            <div class="airport-city" id="to-city">Where are you going?</div>
+            <input class="airport-input" id="to-input" type="text" placeholder="Search airport…" autocomplete="off" />
+            <div class="airport-suggestions" id="to-suggestions"></div>
+          </div>
         </div>
-        <div class="search-field">
-          <label>Travelers</label>
-          <select>
-            <option>1 Adult</option>
-            <option>2 Adults</option>
-            <option>Family (2+2)</option>
-            <option>Group (5+)</option>
-          </select>
+
+        <!-- Row 2: Dates + Pax + Class + Search -->
+        <div class="flight-row-2">
+          <div class="flight-field">
+            <label>Departure</label>
+            <input type="date" id="dep-date" />
+          </div>
+          <div class="flight-field" id="ret-field">
+            <label>Return</label>
+            <input type="date" id="ret-date" />
+          </div>
+          <div class="flight-field" id="pax-field" style="cursor:pointer;">
+            <label>Passengers</label>
+            <div class="flight-field-value" id="pax-display">1 Adult</div>
+            <div class="pax-dropdown" id="pax-dropdown">
+              <div class="pax-row">
+                <div><div class="pax-label">Adults</div><div class="pax-sublabel">Age 12+</div></div>
+                <div class="pax-counter">
+                  <button class="pax-btn" data-type="adults" data-action="minus">−</button>
+                  <span class="pax-count" id="adults-count">1</span>
+                  <button class="pax-btn" data-type="adults" data-action="plus">+</button>
+                </div>
+              </div>
+              <div class="pax-row">
+                <div><div class="pax-label">Children</div><div class="pax-sublabel">Age 2–11</div></div>
+                <div class="pax-counter">
+                  <button class="pax-btn" data-type="children" data-action="minus">−</button>
+                  <span class="pax-count" id="children-count">0</span>
+                  <button class="pax-btn" data-type="children" data-action="plus">+</button>
+                </div>
+              </div>
+              <div class="pax-row">
+                <div><div class="pax-label">Infants</div><div class="pax-sublabel">Under 2</div></div>
+                <div class="pax-counter">
+                  <button class="pax-btn" data-type="infants" data-action="minus">−</button>
+                  <span class="pax-count" id="infants-count">0</span>
+                  <button class="pax-btn" data-type="infants" data-action="plus">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flight-field">
+            <label>Cabin Class</label>
+            <select id="cabin-class">
+              <option value="Economy">Economy</option>
+              <option value="Premium Economy">Premium Economy</option>
+              <option value="Business">Business</option>
+              <option value="First Class">First Class</option>
+            </select>
+          </div>
+          <button class="flight-search-btn" id="flight-search-btn">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            Search Flights
+          </button>
         </div>
-        <button class="btn btn-primary" style="height:44px; white-space:nowrap;">Search</button>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Search Modal -->
+  <div class="search-modal-overlay" id="search-modal-overlay">
+    <div class="search-modal" id="search-modal">
+      <button class="modal-close" id="modal-close">✕</button>
+
+      <!-- Searching state -->
+      <div class="modal-searching">
+        <div class="modal-plane-wrap">
+          <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+        </div>
+        <div class="modal-route" id="modal-route">BEY → —</div>
+        <div class="modal-dates" id="modal-dates">Searching best fares…</div>
+        <div class="search-progress">
+          <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill"></div></div>
+          <div class="progress-label" id="progress-label">Initializing search…</div>
+        </div>
+        <div class="progress-steps">
+          <span class="progress-step" id="step-1">500+ Airlines</span>
+          <span class="progress-step" id="step-2">Best Prices</span>
+          <span class="progress-step" id="step-3">Availability</span>
+          <span class="progress-step" id="step-4">Special Deals</span>
+        </div>
+      </div>
+
+      <!-- Result state -->
+      <div class="modal-result">
+        <span class="result-icon">🎉</span>
+        <div class="result-headline">We found great deals!</div>
+        <div class="result-route-pill" id="result-route-pill">
+          <span id="result-from">BEY</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+          <span id="result-to">—</span>
+        </div>
+        <p class="result-body">
+          Our algorithms scanned <strong>500+ airlines</strong> and found incredible fares for your route. But here's the secret — our Beirut-based travel experts have <strong>exclusive deals</strong> that no website can show you.<br /><br />
+          Connect with us on WhatsApp and we'll send you the best options within minutes. 🚀
+        </p>
+        <a class="whatsapp-cta-btn" id="whatsapp-result-btn" href="https://wa.me/96170912129" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Get My Personalized Quote on WhatsApp
+        </a>
       </div>
     </div>
   </div>
@@ -1375,7 +1881,7 @@
           <h4>Contact</h4>
           <div class="footer-contact-item">
             <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-            <span>Hamra Street, Beirut,<br />Lebanon</span>
+            <span>Centro Mall, Beirut,<br />Lebanon</span>
           </div>
           <div class="footer-contact-item">
             <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
@@ -1427,6 +1933,220 @@
         const target = document.querySelector(a.getAttribute('href'));
         if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
       });
+    });
+
+    // ── FLIGHT SEARCH ──────────────────────────────────────
+    const AIRPORTS = [
+      { code:'BEY', city:'Beirut',        name:'Rafic Hariri International', country:'Lebanon' },
+      { code:'DXB', city:'Dubai',         name:'Dubai International',        country:'UAE' },
+      { code:'AUH', city:'Abu Dhabi',     name:'Abu Dhabi International',    country:'UAE' },
+      { code:'DOH', city:'Doha',          name:'Hamad International',        country:'Qatar' },
+      { code:'RUH', city:'Riyadh',        name:'King Khalid International',  country:'Saudi Arabia' },
+      { code:'JED', city:'Jeddah',        name:'King Abdulaziz International',country:'Saudi Arabia' },
+      { code:'KWI', city:'Kuwait City',   name:'Kuwait International',       country:'Kuwait' },
+      { code:'BAH', city:'Manama',        name:'Bahrain International',      country:'Bahrain' },
+      { code:'AMM', city:'Amman',         name:'Queen Alia International',   country:'Jordan' },
+      { code:'CAI', city:'Cairo',         name:'Cairo International',        country:'Egypt' },
+      { code:'CDG', city:'Paris',         name:'Charles de Gaulle',          country:'France' },
+      { code:'LHR', city:'London',        name:'Heathrow',                   country:'UK' },
+      { code:'LGW', city:'London',        name:'Gatwick',                    country:'UK' },
+      { code:'MXP', city:'Milan',         name:'Malpensa',                   country:'Italy' },
+      { code:'FCO', city:'Rome',          name:'Leonardo da Vinci',          country:'Italy' },
+      { code:'ATH', city:'Athens',        name:'Eleftherios Venizelos',      country:'Greece' },
+      { code:'IST', city:'Istanbul',      name:'Istanbul Airport',           country:'Turkey' },
+      { code:'FRA', city:'Frankfurt',     name:'Frankfurt Airport',          country:'Germany' },
+      { code:'MUC', city:'Munich',        name:'Munich Airport',             country:'Germany' },
+      { code:'BCN', city:'Barcelona',     name:'El Prat',                    country:'Spain' },
+      { code:'MAD', city:'Madrid',        name:'Barajas',                    country:'Spain' },
+      { code:'AMS', city:'Amsterdam',     name:'Schiphol',                   country:'Netherlands' },
+      { code:'ZRH', city:'Zurich',        name:'Zurich Airport',             country:'Switzerland' },
+      { code:'GVA', city:'Geneva',        name:'Geneva Airport',             country:'Switzerland' },
+      { code:'VIE', city:'Vienna',        name:'Vienna International',       country:'Austria' },
+      { code:'BRU', city:'Brussels',      name:'Brussels Airport',           country:'Belgium' },
+      { code:'LIS', city:'Lisbon',        name:'Humberto Delgado',           country:'Portugal' },
+      { code:'JFK', city:'New York',      name:'John F. Kennedy',            country:'USA' },
+      { code:'LAX', city:'Los Angeles',   name:'Los Angeles International',  country:'USA' },
+      { code:'ORD', city:'Chicago',       name:"O'Hare International",       country:'USA' },
+      { code:'MIA', city:'Miami',         name:'Miami International',        country:'USA' },
+      { code:'YYZ', city:'Toronto',       name:'Pearson International',      country:'Canada' },
+      { code:'SYD', city:'Sydney',        name:'Kingsford Smith',            country:'Australia' },
+      { code:'BKK', city:'Bangkok',       name:'Suvarnabhumi',               country:'Thailand' },
+      { code:'SIN', city:'Singapore',     name:'Changi',                     country:'Singapore' },
+      { code:'NRT', city:'Tokyo',         name:'Narita International',       country:'Japan' },
+      { code:'MLE', city:'Malé',          name:'Velana International',       country:'Maldives' },
+      { code:'CMN', city:'Casablanca',    name:'Mohammed V',                 country:'Morocco' },
+      { code:'TUN', city:'Tunis',         name:'Carthage International',     country:'Tunisia' },
+      { code:'ALG', city:'Algiers',       name:'Houari Boumediene',          country:'Algeria' },
+    ];
+
+    let fromAirport = AIRPORTS[0];
+    let toAirport   = null;
+    let pax = { adults: 1, children: 0, infants: 0 };
+
+    function updatePaxDisplay() {
+      const total = pax.adults + pax.children + pax.infants;
+      const parts = [];
+      if (pax.adults)   parts.push(pax.adults   + ' Adult'   + (pax.adults   > 1 ? 's' : ''));
+      if (pax.children) parts.push(pax.children + ' Child'   + (pax.children > 1 ? 'ren' : ''));
+      if (pax.infants)  parts.push(pax.infants  + ' Infant'  + (pax.infants  > 1 ? 's' : ''));
+      document.getElementById('pax-display').textContent = parts.join(', ') || '1 Adult';
+    }
+
+    function buildSuggestions(query, containerId) {
+      const box = document.getElementById(containerId);
+      const q = query.toLowerCase();
+      const matches = AIRPORTS.filter(a =>
+        a.code.toLowerCase().includes(q) ||
+        a.city.toLowerCase().includes(q) ||
+        a.name.toLowerCase().includes(q) ||
+        a.country.toLowerCase().includes(q)
+      ).slice(0, 7);
+      box.innerHTML = matches.map(a => `
+        <div class="airport-suggestion" data-code="${a.code}">
+          <span class="sug-code">${a.code}</span>
+          <div class="sug-info">
+            <div class="sug-city">${a.city}</div>
+            <div class="sug-name">${a.name}</div>
+          </div>
+          <span class="sug-country">${a.country}</span>
+        </div>`).join('');
+      box.classList.toggle('open', matches.length > 0 && query.length > 0);
+      box.querySelectorAll('.airport-suggestion').forEach(el => {
+        el.addEventListener('mousedown', e => {
+          e.preventDefault();
+          const code = el.dataset.code;
+          const airport = AIRPORTS.find(a => a.code === code);
+          if (containerId === 'from-suggestions') {
+            fromAirport = airport;
+            document.getElementById('from-code').textContent = airport.code;
+            document.getElementById('from-city').textContent = airport.city + ', ' + airport.country;
+            document.getElementById('from-input').value = '';
+          } else {
+            toAirport = airport;
+            document.getElementById('to-code').textContent = airport.code;
+            document.getElementById('to-city').textContent = airport.city + ', ' + airport.country;
+            document.getElementById('to-input').value = '';
+          }
+          box.classList.remove('open');
+        });
+      });
+    }
+
+    document.getElementById('from-input').addEventListener('input', e => buildSuggestions(e.target.value, 'from-suggestions'));
+    document.getElementById('to-input').addEventListener('input',   e => buildSuggestions(e.target.value, 'to-suggestions'));
+    document.getElementById('from-field').addEventListener('click', () => { document.getElementById('from-input').focus(); buildSuggestions('', 'from-suggestions'); });
+    document.getElementById('to-field').addEventListener('click',   () => { document.getElementById('to-input').focus();   buildSuggestions('a', 'to-suggestions'); });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('#from-field')) document.getElementById('from-suggestions').classList.remove('open');
+      if (!e.target.closest('#to-field'))   document.getElementById('to-suggestions').classList.remove('open');
+      if (!e.target.closest('#pax-field'))  document.getElementById('pax-dropdown').classList.remove('open');
+    });
+
+    // Swap
+    document.getElementById('swap-btn').addEventListener('click', () => {
+      [fromAirport, toAirport] = [toAirport, fromAirport];
+      if (fromAirport) {
+        document.getElementById('from-code').textContent = fromAirport.code;
+        document.getElementById('from-city').textContent = fromAirport.city + ', ' + fromAirport.country;
+      } else {
+        document.getElementById('from-code').textContent = '—';
+        document.getElementById('from-city').textContent = 'Where are you going?';
+      }
+      if (toAirport) {
+        document.getElementById('to-code').textContent = toAirport.code;
+        document.getElementById('to-city').textContent = toAirport.city + ', ' + toAirport.country;
+      } else {
+        document.getElementById('to-code').textContent = '—';
+        document.getElementById('to-city').textContent = 'Where are you going?';
+      }
+    });
+
+    // Trip type
+    document.querySelectorAll('.trip-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.trip-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('ret-field').style.opacity = btn.dataset.trip === 'one' ? '0.4' : '1';
+        document.getElementById('ret-field').style.pointerEvents = btn.dataset.trip === 'one' ? 'none' : 'auto';
+      });
+    });
+
+    // Passenger counter
+    document.getElementById('pax-field').addEventListener('click', e => {
+      if (!e.target.closest('.pax-btn')) document.getElementById('pax-dropdown').classList.toggle('open');
+    });
+    document.querySelectorAll('.pax-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const type = btn.dataset.type, action = btn.dataset.action;
+        if (action === 'plus') pax[type] = Math.min(pax[type] + 1, 9);
+        if (action === 'minus') pax[type] = Math.max(pax[type] - (type === 'adults' ? 1 : 0), 0);
+        document.getElementById(type + '-count').textContent = pax[type];
+        updatePaxDisplay();
+      });
+    });
+
+    // Set default departure date to tomorrow
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('dep-date').value = tomorrow.toISOString().split('T')[0];
+    const nextWeek = new Date(); nextWeek.setDate(nextWeek.getDate() + 8);
+    document.getElementById('ret-date').value = nextWeek.toISOString().split('T')[0];
+
+    // Search modal
+    const overlay  = document.getElementById('search-modal-overlay');
+    const modal    = document.getElementById('search-modal');
+    const fillBar  = document.getElementById('progress-fill');
+    const steps    = ['step-1','step-2','step-3','step-4'];
+    const messages = ['Connecting to 500+ airlines…','Checking seat availability…','Comparing prices & upgrades…','Applying exclusive Pack\'nGo deals…'];
+
+    document.getElementById('modal-close').addEventListener('click', () => {
+      overlay.classList.remove('open');
+      modal.classList.remove('result');
+    });
+    overlay.addEventListener('click', e => { if (e.target === overlay) { overlay.classList.remove('open'); modal.classList.remove('result'); } });
+
+    document.getElementById('flight-search-btn').addEventListener('click', () => {
+      const from = fromAirport ? fromAirport.code : 'BEY';
+      const to   = toAirport   ? toAirport.code   : '?';
+      const toCity = toAirport ? toAirport.city : 'your destination';
+      const dep  = document.getElementById('dep-date').value;
+      const ret  = document.getElementById('ret-date').value;
+      const cabin = document.getElementById('cabin-class').value;
+      const paxStr = document.getElementById('pax-display').textContent;
+
+      document.getElementById('modal-route').textContent = from + ' → ' + to;
+      document.getElementById('modal-dates').textContent = dep + (ret ? ' — ' + ret : '') + ' · ' + paxStr + ' · ' + cabin;
+      document.getElementById('result-from').textContent = from;
+      document.getElementById('result-to').textContent   = to;
+
+      // Build WhatsApp message
+      const waMsg = encodeURIComponent(`Hi Pack'nGo! I'm looking for a ${cabin} flight from ${from} to ${to} on ${dep}${ret ? ', returning ' + ret : ''}. ${paxStr}. Can you send me the best available deals?`);
+      document.getElementById('whatsapp-result-btn').href = `https://wa.me/96170912129?text=${waMsg}`;
+
+      // Reset progress
+      modal.classList.remove('result');
+      fillBar.style.width = '0%';
+      steps.forEach(s => document.getElementById(s).classList.remove('done'));
+      document.getElementById('progress-label').textContent = 'Initializing search…';
+      overlay.classList.add('open');
+
+      // Animate progress
+      let step = 0;
+      const interval = setInterval(() => {
+        if (step >= steps.length) { clearInterval(interval); return; }
+        document.getElementById(steps[step]).classList.add('done');
+        document.getElementById('progress-label').textContent = messages[step];
+        fillBar.style.width = ((step + 1) / steps.length * 100) + '%';
+        step++;
+      }, 900);
+
+      // Show result
+      setTimeout(() => {
+        clearInterval(interval);
+        fillBar.style.width = '100%';
+        steps.forEach(s => document.getElementById(s).classList.add('done'));
+        setTimeout(() => modal.classList.add('result'), 400);
+      }, 4000);
     });
 
     // Hero parallax on scroll
