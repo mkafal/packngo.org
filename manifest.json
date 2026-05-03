@@ -1,0 +1,18 @@
+{
+  "name": "Pack'nGo Travel",
+  "short_name": "Pack'nGo",
+  "description": "Premium travel agency — fly your dreams across 120+ destinations.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1B3A6B",
+  "theme_color": "#1B3A6B",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
