@@ -313,6 +313,47 @@
     }
     .trip-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
 
+    /* Popular routes */
+    .popular-routes {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .popular-routes-label {
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .popular-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .popular-chip {
+      padding: 5px 13px;
+      border-radius: 999px;
+      border: 1.5px solid var(--gray-200);
+      background: white;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-sans);
+    }
+    .popular-chip:hover {
+      border-color: var(--navy);
+      background: var(--navy);
+      color: white;
+    }
+
+    /* Flag in suggestion */
+    .sug-flag { font-size: 1.1rem; flex-shrink: 0; }
+
     /* Main search row */
     .flight-row-1 {
       display: grid;
@@ -343,12 +384,13 @@
       margin-bottom: 5px;
     }
     .airport-code {
-      font-size: 1.6rem;
+      font-size: 2.2rem;
       font-weight: 800;
       color: var(--navy);
       line-height: 1;
+      letter-spacing: -.03em;
     }
-    .airport-city { font-size: .82rem; color: var(--gray-500); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .airport-city { font-size: .82rem; color: var(--gray-500); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .airport-input-wrap { position: relative; }
     .airport-input {
       position: absolute;
@@ -697,6 +739,7 @@
       .flight-row-1 { grid-template-columns: 1fr 40px 1fr; }
       .flight-row-2 { grid-template-columns: 1fr 1fr; }
       .flight-search-btn { grid-column: 1 / -1; justify-content: center; }
+      .popular-routes-label { display: none; }
     }
     @media (max-width: 580px) {
       .flight-card { padding: 24px 20px; }
@@ -705,6 +748,7 @@
       .swap-btn { display: none; }
       .flight-row-2 { grid-template-columns: 1fr 1fr; }
       .search-modal { padding: 36px 24px; }
+      .airport-code { font-size: 1.8rem; }
     }
 
     /* ─── DESTINATIONS ───────────────────────────────────── */
@@ -1405,12 +1449,27 @@
           <button class="trip-btn" data-trip="multi">+ Multi-City</button>
         </div>
 
+        <!-- Popular routes -->
+        <div class="popular-routes">
+          <span class="popular-routes-label">Popular from BEY</span>
+          <div class="popular-chips">
+            <button class="popular-chip" data-code="DXB">🇦🇪 Dubai</button>
+            <button class="popular-chip" data-code="CDG">🇫🇷 Paris</button>
+            <button class="popular-chip" data-code="IST">🇹🇷 Istanbul</button>
+            <button class="popular-chip" data-code="LHR">🇬🇧 London</button>
+            <button class="popular-chip" data-code="CAI">🇪🇬 Cairo</button>
+            <button class="popular-chip" data-code="BKK">🇹🇭 Bangkok</button>
+            <button class="popular-chip" data-code="BCN">🇪🇸 Barcelona</button>
+            <button class="popular-chip" data-code="MLE">🇲🇻 Maldives</button>
+          </div>
+        </div>
+
         <!-- Row 1: From / Swap / To -->
         <div class="flight-row-1">
           <div class="airport-field" id="from-field">
             <label>From</label>
             <div class="airport-code" id="from-code">BEY</div>
-            <div class="airport-city" id="from-city">Beirut Rafic Hariri, Lebanon</div>
+            <div class="airport-city" id="from-city">🇱🇧 Beirut, Lebanon</div>
             <input class="airport-input" id="from-input" type="text" placeholder="Search airport…" autocomplete="off" />
             <div class="airport-suggestions" id="from-suggestions"></div>
           </div>
@@ -1972,46 +2031,218 @@
 
     // ── FLIGHT SEARCH ──────────────────────────────────────
     const AIRPORTS = [
-      { code:'BEY', city:'Beirut',        name:'Rafic Hariri International', country:'Lebanon' },
-      { code:'DXB', city:'Dubai',         name:'Dubai International',        country:'UAE' },
-      { code:'AUH', city:'Abu Dhabi',     name:'Abu Dhabi International',    country:'UAE' },
-      { code:'DOH', city:'Doha',          name:'Hamad International',        country:'Qatar' },
-      { code:'RUH', city:'Riyadh',        name:'King Khalid International',  country:'Saudi Arabia' },
-      { code:'JED', city:'Jeddah',        name:'King Abdulaziz International',country:'Saudi Arabia' },
-      { code:'KWI', city:'Kuwait City',   name:'Kuwait International',       country:'Kuwait' },
-      { code:'BAH', city:'Manama',        name:'Bahrain International',      country:'Bahrain' },
-      { code:'AMM', city:'Amman',         name:'Queen Alia International',   country:'Jordan' },
-      { code:'CAI', city:'Cairo',         name:'Cairo International',        country:'Egypt' },
-      { code:'CDG', city:'Paris',         name:'Charles de Gaulle',          country:'France' },
-      { code:'LHR', city:'London',        name:'Heathrow',                   country:'UK' },
-      { code:'LGW', city:'London',        name:'Gatwick',                    country:'UK' },
-      { code:'MXP', city:'Milan',         name:'Malpensa',                   country:'Italy' },
-      { code:'FCO', city:'Rome',          name:'Leonardo da Vinci',          country:'Italy' },
-      { code:'ATH', city:'Athens',        name:'Eleftherios Venizelos',      country:'Greece' },
-      { code:'IST', city:'Istanbul',      name:'Istanbul Airport',           country:'Turkey' },
-      { code:'FRA', city:'Frankfurt',     name:'Frankfurt Airport',          country:'Germany' },
-      { code:'MUC', city:'Munich',        name:'Munich Airport',             country:'Germany' },
-      { code:'BCN', city:'Barcelona',     name:'El Prat',                    country:'Spain' },
-      { code:'MAD', city:'Madrid',        name:'Barajas',                    country:'Spain' },
-      { code:'AMS', city:'Amsterdam',     name:'Schiphol',                   country:'Netherlands' },
-      { code:'ZRH', city:'Zurich',        name:'Zurich Airport',             country:'Switzerland' },
-      { code:'GVA', city:'Geneva',        name:'Geneva Airport',             country:'Switzerland' },
-      { code:'VIE', city:'Vienna',        name:'Vienna International',       country:'Austria' },
-      { code:'BRU', city:'Brussels',      name:'Brussels Airport',           country:'Belgium' },
-      { code:'LIS', city:'Lisbon',        name:'Humberto Delgado',           country:'Portugal' },
-      { code:'JFK', city:'New York',      name:'John F. Kennedy',            country:'USA' },
-      { code:'LAX', city:'Los Angeles',   name:'Los Angeles International',  country:'USA' },
-      { code:'ORD', city:'Chicago',       name:"O'Hare International",       country:'USA' },
-      { code:'MIA', city:'Miami',         name:'Miami International',        country:'USA' },
-      { code:'YYZ', city:'Toronto',       name:'Pearson International',      country:'Canada' },
-      { code:'SYD', city:'Sydney',        name:'Kingsford Smith',            country:'Australia' },
-      { code:'BKK', city:'Bangkok',       name:'Suvarnabhumi',               country:'Thailand' },
-      { code:'SIN', city:'Singapore',     name:'Changi',                     country:'Singapore' },
-      { code:'NRT', city:'Tokyo',         name:'Narita International',       country:'Japan' },
-      { code:'MLE', city:'Malé',          name:'Velana International',       country:'Maldives' },
-      { code:'CMN', city:'Casablanca',    name:'Mohammed V',                 country:'Morocco' },
-      { code:'TUN', city:'Tunis',         name:'Carthage International',     country:'Tunisia' },
-      { code:'ALG', city:'Algiers',       name:'Houari Boumediene',          country:'Algeria' },
+      // ─ MIDDLE EAST ─
+      { code:'BEY', city:'Beirut',          name:'Rafic Hariri International',    country:'Lebanon',       flag:'🇱🇧' },
+      { code:'DXB', city:'Dubai',           name:'Dubai International',           country:'UAE',           flag:'🇦🇪' },
+      { code:'AUH', city:'Abu Dhabi',       name:'Abu Dhabi International',       country:'UAE',           flag:'🇦🇪' },
+      { code:'SHJ', city:'Sharjah',         name:'Sharjah International',         country:'UAE',           flag:'🇦🇪' },
+      { code:'DOH', city:'Doha',            name:'Hamad International',           country:'Qatar',         flag:'🇶🇦' },
+      { code:'RUH', city:'Riyadh',          name:'King Khalid International',     country:'Saudi Arabia',  flag:'🇸🇦' },
+      { code:'JED', city:'Jeddah',          name:'King Abdulaziz International',  country:'Saudi Arabia',  flag:'🇸🇦' },
+      { code:'MED', city:'Medina',          name:'Prince Mohammed Bin Abdulaziz', country:'Saudi Arabia',  flag:'🇸🇦' },
+      { code:'DMM', city:'Dammam',          name:'King Fahd International',       country:'Saudi Arabia',  flag:'🇸🇦' },
+      { code:'KWI', city:'Kuwait City',     name:'Kuwait International',          country:'Kuwait',        flag:'🇰🇼' },
+      { code:'BAH', city:'Manama',          name:'Bahrain International',         country:'Bahrain',       flag:'🇧🇭' },
+      { code:'MCT', city:'Muscat',          name:'Muscat International',          country:'Oman',          flag:'🇴🇲' },
+      { code:'SLL', city:'Salalah',         name:'Salalah Airport',               country:'Oman',          flag:'🇴🇲' },
+      { code:'AMM', city:'Amman',           name:'Queen Alia International',      country:'Jordan',        flag:'🇯🇴' },
+      { code:'AQJ', city:'Aqaba',           name:'King Hussein International',    country:'Jordan',        flag:'🇯🇴' },
+      { code:'DAM', city:'Damascus',        name:'Damascus International',        country:'Syria',         flag:'🇸🇾' },
+      { code:'BGW', city:'Baghdad',         name:'Baghdad International',         country:'Iraq',          flag:'🇮🇶' },
+      { code:'BSR', city:'Basra',           name:'Basra International',           country:'Iraq',          flag:'🇮🇶' },
+      { code:'EBL', city:'Erbil',           name:'Erbil International',           country:'Iraq',          flag:'🇮🇶' },
+      { code:'TLV', city:'Tel Aviv',        name:'Ben Gurion International',      country:'Israel',        flag:'🇮🇱' },
+      // ─ AFRICA ─
+      { code:'CAI', city:'Cairo',           name:'Cairo International',           country:'Egypt',         flag:'🇪🇬' },
+      { code:'HBE', city:'Alexandria',      name:'Borg El Arab',                  country:'Egypt',         flag:'🇪🇬' },
+      { code:'LXR', city:'Luxor',           name:'Luxor International',           country:'Egypt',         flag:'🇪🇬' },
+      { code:'HRG', city:'Hurghada',        name:'Hurghada International',        country:'Egypt',         flag:'🇪🇬' },
+      { code:'SSH', city:'Sharm El-Sheikh', name:'Sharm El-Sheikh International', country:'Egypt',         flag:'🇪🇬' },
+      { code:'CMN', city:'Casablanca',      name:'Mohammed V',                    country:'Morocco',       flag:'🇲🇦' },
+      { code:'RAK', city:'Marrakech',       name:'Menara Airport',                country:'Morocco',       flag:'🇲🇦' },
+      { code:'AGA', city:'Agadir',          name:'Al Massira Airport',            country:'Morocco',       flag:'🇲🇦' },
+      { code:'FEZ', city:'Fez',             name:'Saiss Airport',                 country:'Morocco',       flag:'🇲🇦' },
+      { code:'TNG', city:'Tangier',         name:'Ibn Batuta Airport',            country:'Morocco',       flag:'🇲🇦' },
+      { code:'TUN', city:'Tunis',           name:'Carthage International',        country:'Tunisia',       flag:'🇹🇳' },
+      { code:'MIR', city:'Monastir',        name:'Habib Bourguiba',               country:'Tunisia',       flag:'🇹🇳' },
+      { code:'DJE', city:'Djerba',          name:'Djerba-Zarzis',                 country:'Tunisia',       flag:'🇹🇳' },
+      { code:'ALG', city:'Algiers',         name:'Houari Boumediene',             country:'Algeria',       flag:'🇩🇿' },
+      { code:'ORN', city:'Oran',            name:'Es Senia Airport',              country:'Algeria',       flag:'🇩🇿' },
+      { code:'TRI', city:'Tripoli',         name:'Mitiga International',          country:'Libya',         flag:'🇱🇾' },
+      { code:'ADD', city:'Addis Ababa',     name:'Bole International',            country:'Ethiopia',      flag:'🇪🇹' },
+      { code:'NBO', city:'Nairobi',         name:'Jomo Kenyatta',                 country:'Kenya',         flag:'🇰🇪' },
+      { code:'MBA', city:'Mombasa',         name:'Moi International',             country:'Kenya',         flag:'🇰🇪' },
+      { code:'DAR', city:'Dar es Salaam',   name:'Julius Nyerere',                country:'Tanzania',      flag:'🇹🇿' },
+      { code:'ZNZ', city:'Zanzibar',        name:'Abeid Amani Karume',            country:'Tanzania',      flag:'🇹🇿' },
+      { code:'JNB', city:'Johannesburg',    name:'O.R. Tambo International',      country:'South Africa',  flag:'🇿🇦' },
+      { code:'CPT', city:'Cape Town',       name:'Cape Town International',       country:'South Africa',  flag:'🇿🇦' },
+      { code:'DUR', city:'Durban',          name:'King Shaka International',      country:'South Africa',  flag:'🇿🇦' },
+      { code:'LOS', city:'Lagos',           name:'Murtala Muhammed',              country:'Nigeria',       flag:'🇳🇬' },
+      { code:'ABV', city:'Abuja',           name:'Nnamdi Azikiwe',                country:'Nigeria',       flag:'🇳🇬' },
+      { code:'ACC', city:'Accra',           name:'Kotoka International',          country:'Ghana',         flag:'🇬🇭' },
+      { code:'DKR', city:'Dakar',           name:'Blaise Diagne International',   country:'Senegal',       flag:'🇸🇳' },
+      { code:'MRU', city:'Mauritius',       name:'SSR International',             country:'Mauritius',     flag:'🇲🇺' },
+      { code:'SEZ', city:'Mahe',            name:'Seychelles International',      country:'Seychelles',    flag:'🇸🇨' },
+      { code:'HRE', city:'Harare',          name:'Robert Gabriel Mugabe',         country:'Zimbabwe',      flag:'🇿🇼' },
+      // ─ EUROPE ─
+      { code:'CDG', city:'Paris',           name:'Charles de Gaulle',             country:'France',        flag:'🇫🇷' },
+      { code:'ORY', city:'Paris',           name:'Orly Airport',                  country:'France',        flag:'🇫🇷' },
+      { code:'NCE', city:'Nice',            name:'Cote d\'Azur Airport',          country:'France',        flag:'🇫🇷' },
+      { code:'MRS', city:'Marseille',       name:'Provence Airport',              country:'France',        flag:'🇫🇷' },
+      { code:'LYS', city:'Lyon',            name:'Saint-Exupery Airport',         country:'France',        flag:'🇫🇷' },
+      { code:'LHR', city:'London',          name:'Heathrow',                      country:'UK',            flag:'🇬🇧' },
+      { code:'LGW', city:'London',          name:'Gatwick',                       country:'UK',            flag:'🇬🇧' },
+      { code:'STN', city:'London',          name:'Stansted',                      country:'UK',            flag:'🇬🇧' },
+      { code:'LTN', city:'London',          name:'Luton Airport',                 country:'UK',            flag:'🇬🇧' },
+      { code:'MAN', city:'Manchester',      name:'Manchester Airport',            country:'UK',            flag:'🇬🇧' },
+      { code:'BHX', city:'Birmingham',      name:'Birmingham Airport',            country:'UK',            flag:'🇬🇧' },
+      { code:'EDI', city:'Edinburgh',       name:'Edinburgh Airport',             country:'UK',            flag:'🇬🇧' },
+      { code:'FRA', city:'Frankfurt',       name:'Frankfurt Airport',             country:'Germany',       flag:'🇩🇪' },
+      { code:'MUC', city:'Munich',          name:'Munich Airport',                country:'Germany',       flag:'🇩🇪' },
+      { code:'DUS', city:'Dusseldorf',      name:'Dusseldorf Airport',            country:'Germany',       flag:'🇩🇪' },
+      { code:'HAM', city:'Hamburg',         name:'Hamburg Airport',               country:'Germany',       flag:'🇩🇪' },
+      { code:'BER', city:'Berlin',          name:'Brandenburg Airport',           country:'Germany',       flag:'🇩🇪' },
+      { code:'STR', city:'Stuttgart',       name:'Stuttgart Airport',             country:'Germany',       flag:'🇩🇪' },
+      { code:'MAD', city:'Madrid',          name:'Barajas',                       country:'Spain',         flag:'🇪🇸' },
+      { code:'BCN', city:'Barcelona',       name:'El Prat',                       country:'Spain',         flag:'🇪🇸' },
+      { code:'PMI', city:'Palma',           name:'Son Sant Joan',                 country:'Spain',         flag:'🇪🇸' },
+      { code:'AGP', city:'Malaga',          name:'Costa del Sol',                 country:'Spain',         flag:'🇪🇸' },
+      { code:'ALC', city:'Alicante',        name:'Alicante-Elche',                country:'Spain',         flag:'🇪🇸' },
+      { code:'SVQ', city:'Seville',         name:'San Pablo Airport',             country:'Spain',         flag:'🇪🇸' },
+      { code:'IBZ', city:'Ibiza',           name:'Ibiza Airport',                 country:'Spain',         flag:'🇪🇸' },
+      { code:'FCO', city:'Rome',            name:'Leonardo da Vinci',             country:'Italy',         flag:'🇮🇹' },
+      { code:'MXP', city:'Milan',           name:'Malpensa',                      country:'Italy',         flag:'🇮🇹' },
+      { code:'LIN', city:'Milan',           name:'Linate',                        country:'Italy',         flag:'🇮🇹' },
+      { code:'VCE', city:'Venice',          name:'Marco Polo Airport',            country:'Italy',         flag:'🇮🇹' },
+      { code:'NAP', city:'Naples',          name:'Capodichino',                   country:'Italy',         flag:'🇮🇹' },
+      { code:'CTA', city:'Catania',         name:'Fontanarossa',                  country:'Italy',         flag:'🇮🇹' },
+      { code:'FLR', city:'Florence',        name:'Peretola Airport',              country:'Italy',         flag:'🇮🇹' },
+      { code:'AMS', city:'Amsterdam',       name:'Schiphol',                      country:'Netherlands',   flag:'🇳🇱' },
+      { code:'BRU', city:'Brussels',        name:'Brussels Airport',              country:'Belgium',       flag:'🇧🇪' },
+      { code:'ZRH', city:'Zurich',          name:'Zurich Airport',                country:'Switzerland',   flag:'🇨🇭' },
+      { code:'GVA', city:'Geneva',          name:'Geneva Airport',                country:'Switzerland',   flag:'🇨🇭' },
+      { code:'VIE', city:'Vienna',          name:'Vienna International',          country:'Austria',       flag:'🇦🇹' },
+      { code:'SZG', city:'Salzburg',        name:'W.A. Mozart Airport',           country:'Austria',       flag:'🇦🇹' },
+      { code:'LIS', city:'Lisbon',          name:'Humberto Delgado',              country:'Portugal',      flag:'🇵🇹' },
+      { code:'OPO', city:'Porto',           name:'Francisco Sa Carneiro',         country:'Portugal',      flag:'🇵🇹' },
+      { code:'FAO', city:'Faro',            name:'Faro Airport',                  country:'Portugal',      flag:'🇵🇹' },
+      { code:'ATH', city:'Athens',          name:'Eleftherios Venizelos',         country:'Greece',        flag:'🇬🇷' },
+      { code:'SKG', city:'Thessaloniki',    name:'Macedonia Airport',             country:'Greece',        flag:'🇬🇷' },
+      { code:'HER', city:'Heraklion',       name:'Nikos Kazantzakis',             country:'Greece',        flag:'🇬🇷' },
+      { code:'RHO', city:'Rhodes',          name:'Diagoras Airport',              country:'Greece',        flag:'🇬🇷' },
+      { code:'JTR', city:'Santorini',       name:'Thira Airport',                 country:'Greece',        flag:'🇬🇷' },
+      { code:'CFU', city:'Corfu',           name:'Ioannis Kapodistrias',          country:'Greece',        flag:'🇬🇷' },
+      { code:'MYK', city:'Mykonos',         name:'Mykonos Airport',               country:'Greece',        flag:'🇬🇷' },
+      { code:'IST', city:'Istanbul',        name:'Istanbul Airport',              country:'Turkey',        flag:'🇹🇷' },
+      { code:'SAW', city:'Istanbul',        name:'Sabiha Gokcen',                 country:'Turkey',        flag:'🇹🇷' },
+      { code:'AYT', city:'Antalya',         name:'Antalya Airport',               country:'Turkey',        flag:'🇹🇷' },
+      { code:'ADB', city:'Izmir',           name:'Adnan Menderes',                country:'Turkey',        flag:'🇹🇷' },
+      { code:'ESB', city:'Ankara',          name:'Esenboga Airport',              country:'Turkey',        flag:'🇹🇷' },
+      { code:'DLM', city:'Dalaman',         name:'Dalaman Airport',               country:'Turkey',        flag:'🇹🇷' },
+      { code:'BJV', city:'Bodrum',          name:'Milas-Bodrum Airport',          country:'Turkey',        flag:'🇹🇷' },
+      { code:'OSL', city:'Oslo',            name:'Gardermoen Airport',            country:'Norway',        flag:'🇳🇴' },
+      { code:'CPH', city:'Copenhagen',      name:'Copenhagen Airport',            country:'Denmark',       flag:'🇩🇰' },
+      { code:'ARN', city:'Stockholm',       name:'Arlanda Airport',               country:'Sweden',        flag:'🇸🇪' },
+      { code:'HEL', city:'Helsinki',        name:'Helsinki Airport',              country:'Finland',       flag:'🇫🇮' },
+      { code:'DUB', city:'Dublin',          name:'Dublin Airport',                country:'Ireland',       flag:'🇮🇪' },
+      { code:'PRG', city:'Prague',          name:'Vaclav Havel Airport',          country:'Czech Republic',flag:'🇨🇿' },
+      { code:'BUD', city:'Budapest',        name:'Ferenc Liszt International',    country:'Hungary',       flag:'🇭🇺' },
+      { code:'WAW', city:'Warsaw',          name:'Chopin Airport',                country:'Poland',        flag:'🇵🇱' },
+      { code:'KRK', city:'Krakow',          name:'John Paul II Airport',          country:'Poland',        flag:'🇵🇱' },
+      { code:'SOF', city:'Sofia',           name:'Sofia Airport',                 country:'Bulgaria',      flag:'🇧🇬' },
+      { code:'OTP', city:'Bucharest',       name:'Henri Coanda International',    country:'Romania',       flag:'🇷🇴' },
+      { code:'KBP', city:'Kyiv',            name:'Boryspil International',        country:'Ukraine',       flag:'🇺🇦' },
+      { code:'RIX', city:'Riga',            name:'Riga International',            country:'Latvia',        flag:'🇱🇻' },
+      { code:'TLL', city:'Tallinn',         name:'Lennart Meri Airport',          country:'Estonia',       flag:'🇪🇪' },
+      { code:'VNO', city:'Vilnius',         name:'Vilnius International',         country:'Lithuania',     flag:'🇱🇹' },
+      { code:'SVO', city:'Moscow',          name:'Sheremetyevo',                  country:'Russia',        flag:'🇷🇺' },
+      { code:'LED', city:'St. Petersburg',  name:'Pulkovo Airport',               country:'Russia',        flag:'🇷🇺' },
+      { code:'TBS', city:'Tbilisi',         name:'Shota Rustaveli',               country:'Georgia',       flag:'🇬🇪' },
+      { code:'EVN', city:'Yerevan',         name:'Zvartnots International',       country:'Armenia',       flag:'🇦🇲' },
+      { code:'GYD', city:'Baku',            name:'Heydar Aliyev International',   country:'Azerbaijan',    flag:'🇦🇿' },
+      // ─ ASIA ─
+      { code:'NRT', city:'Tokyo',           name:'Narita International',          country:'Japan',         flag:'🇯🇵' },
+      { code:'HND', city:'Tokyo',           name:'Haneda Airport',                country:'Japan',         flag:'🇯🇵' },
+      { code:'KIX', city:'Osaka',           name:'Kansai International',          country:'Japan',         flag:'🇯🇵' },
+      { code:'NGO', city:'Nagoya',          name:'Chubu Centrair',                country:'Japan',         flag:'🇯🇵' },
+      { code:'ICN', city:'Seoul',           name:'Incheon International',         country:'South Korea',   flag:'🇰🇷' },
+      { code:'PEK', city:'Beijing',         name:'Capital International',         country:'China',         flag:'🇨🇳' },
+      { code:'PKX', city:'Beijing',         name:'Daxing International',          country:'China',         flag:'🇨🇳' },
+      { code:'PVG', city:'Shanghai',        name:'Pudong International',          country:'China',         flag:'🇨🇳' },
+      { code:'CAN', city:'Guangzhou',       name:'Baiyun International',          country:'China',         flag:'🇨🇳' },
+      { code:'CTU', city:'Chengdu',         name:'Tianfu International',          country:'China',         flag:'🇨🇳' },
+      { code:'HKG', city:'Hong Kong',       name:'Hong Kong International',       country:'Hong Kong',     flag:'🇭🇰' },
+      { code:'TPE', city:'Taipei',          name:'Taiwan Taoyuan International',  country:'Taiwan',        flag:'🇹🇼' },
+      { code:'SIN', city:'Singapore',       name:'Changi Airport',                country:'Singapore',     flag:'🇸🇬' },
+      { code:'KUL', city:'Kuala Lumpur',    name:'KLIA',                          country:'Malaysia',      flag:'🇲🇾' },
+      { code:'BKK', city:'Bangkok',         name:'Suvarnabhumi Airport',          country:'Thailand',      flag:'🇹🇭' },
+      { code:'DMK', city:'Bangkok',         name:'Don Mueang Airport',            country:'Thailand',      flag:'🇹🇭' },
+      { code:'HKT', city:'Phuket',          name:'Phuket International',          country:'Thailand',      flag:'🇹🇭' },
+      { code:'CNX', city:'Chiang Mai',      name:'Chiang Mai International',      country:'Thailand',      flag:'🇹🇭' },
+      { code:'CGK', city:'Jakarta',         name:'Soekarno-Hatta',                country:'Indonesia',     flag:'🇮🇩' },
+      { code:'DPS', city:'Bali',            name:'Ngurah Rai International',      country:'Indonesia',     flag:'🇮🇩' },
+      { code:'MNL', city:'Manila',          name:'Ninoy Aquino International',    country:'Philippines',   flag:'🇵🇭' },
+      { code:'CEB', city:'Cebu',            name:'Mactan-Cebu International',     country:'Philippines',   flag:'🇵🇭' },
+      { code:'DEL', city:'New Delhi',       name:'Indira Gandhi International',   country:'India',         flag:'🇮🇳' },
+      { code:'BOM', city:'Mumbai',          name:'Chhatrapati Shivaji Maharaj',   country:'India',         flag:'🇮🇳' },
+      { code:'BLR', city:'Bangalore',       name:'Kempegowda International',      country:'India',         flag:'🇮🇳' },
+      { code:'MAA', city:'Chennai',         name:'Chennai International',         country:'India',         flag:'🇮🇳' },
+      { code:'HYD', city:'Hyderabad',       name:'Rajiv Gandhi International',    country:'India',         flag:'🇮🇳' },
+      { code:'CCU', city:'Kolkata',         name:'Netaji Subhas Chandra Bose',    country:'India',         flag:'🇮🇳' },
+      { code:'COK', city:'Kochi',           name:'Cochin International',          country:'India',         flag:'🇮🇳' },
+      { code:'GOI', city:'Goa',             name:'Goa International',             country:'India',         flag:'🇮🇳' },
+      { code:'AMD', city:'Ahmedabad',       name:'Sardar Vallabhbhai Patel',      country:'India',         flag:'🇮🇳' },
+      { code:'CMB', city:'Colombo',         name:'Bandaranaike International',    country:'Sri Lanka',     flag:'🇱🇰' },
+      { code:'KTM', city:'Kathmandu',       name:'Tribhuvan International',       country:'Nepal',         flag:'🇳🇵' },
+      { code:'DAC', city:'Dhaka',           name:'Hazrat Shahjalal',              country:'Bangladesh',    flag:'🇧🇩' },
+      { code:'RGN', city:'Yangon',          name:'Yangon International',          country:'Myanmar',       flag:'🇲🇲' },
+      { code:'HAN', city:'Hanoi',           name:'Noi Bai International',         country:'Vietnam',       flag:'🇻🇳' },
+      { code:'SGN', city:'Ho Chi Minh',     name:'Tan Son Nhat',                  country:'Vietnam',       flag:'🇻🇳' },
+      { code:'DAD', city:'Da Nang',         name:'Da Nang International',         country:'Vietnam',       flag:'🇻🇳' },
+      { code:'REP', city:'Siem Reap',       name:'Siem Reap International',       country:'Cambodia',      flag:'🇰🇭' },
+      { code:'PNH', city:'Phnom Penh',      name:'Phnom Penh International',      country:'Cambodia',      flag:'🇰🇭' },
+      { code:'MLE', city:'Male',            name:'Velana International',          country:'Maldives',      flag:'🇲🇻' },
+      { code:'ULN', city:'Ulaanbaatar',     name:'Chinggis Khaan International',  country:'Mongolia',      flag:'🇲🇳' },
+      { code:'KHI', city:'Karachi',         name:'Jinnah International',          country:'Pakistan',      flag:'🇵🇰' },
+      { code:'LHE', city:'Lahore',          name:'Allama Iqbal International',    country:'Pakistan',      flag:'🇵🇰' },
+      { code:'ISB', city:'Islamabad',       name:'Islamabad International',       country:'Pakistan',      flag:'🇵🇰' },
+      // ─ AMERICAS ─
+      { code:'JFK', city:'New York',        name:'John F. Kennedy',               country:'USA',           flag:'🇺🇸' },
+      { code:'EWR', city:'New York',        name:'Newark Liberty',                country:'USA',           flag:'🇺🇸' },
+      { code:'LGA', city:'New York',        name:'LaGuardia',                     country:'USA',           flag:'🇺🇸' },
+      { code:'LAX', city:'Los Angeles',     name:'Los Angeles International',     country:'USA',           flag:'🇺🇸' },
+      { code:'SFO', city:'San Francisco',   name:'San Francisco International',   country:'USA',           flag:'🇺🇸' },
+      { code:'ORD', city:'Chicago',         name:"O'Hare International",          country:'USA',           flag:'🇺🇸' },
+      { code:'MIA', city:'Miami',           name:'Miami International',           country:'USA',           flag:'🇺🇸' },
+      { code:'ATL', city:'Atlanta',         name:'Hartsfield-Jackson',            country:'USA',           flag:'🇺🇸' },
+      { code:'DFW', city:'Dallas',          name:'Dallas/Fort Worth',             country:'USA',           flag:'🇺🇸' },
+      { code:'DEN', city:'Denver',          name:'Denver International',          country:'USA',           flag:'🇺🇸' },
+      { code:'BOS', city:'Boston',          name:'Logan International',           country:'USA',           flag:'🇺🇸' },
+      { code:'SEA', city:'Seattle',         name:'Seattle-Tacoma',                country:'USA',           flag:'🇺🇸' },
+      { code:'IAD', city:'Washington DC',   name:'Dulles International',          country:'USA',           flag:'🇺🇸' },
+      { code:'LAS', city:'Las Vegas',       name:'Harry Reid International',      country:'USA',           flag:'🇺🇸' },
+      { code:'MCO', city:'Orlando',         name:'Orlando International',         country:'USA',           flag:'🇺🇸' },
+      { code:'YYZ', city:'Toronto',         name:'Pearson International',         country:'Canada',        flag:'🇨🇦' },
+      { code:'YVR', city:'Vancouver',       name:'Vancouver International',       country:'Canada',        flag:'🇨🇦' },
+      { code:'YUL', city:'Montreal',        name:'Pierre Elliott Trudeau',        country:'Canada',        flag:'🇨🇦' },
+      { code:'YYC', city:'Calgary',         name:'Calgary International',         country:'Canada',        flag:'🇨🇦' },
+      { code:'GRU', city:'Sao Paulo',       name:'Guarulhos International',       country:'Brazil',        flag:'🇧🇷' },
+      { code:'GIG', city:'Rio de Janeiro',  name:'Galeao International',          country:'Brazil',        flag:'🇧🇷' },
+      { code:'EZE', city:'Buenos Aires',    name:'Ezeiza International',          country:'Argentina',     flag:'🇦🇷' },
+      { code:'BOG', city:'Bogota',          name:'El Dorado International',       country:'Colombia',      flag:'🇨🇴' },
+      { code:'LIM', city:'Lima',            name:'Jorge Chavez International',    country:'Peru',          flag:'🇵🇪' },
+      { code:'SCL', city:'Santiago',        name:'Arturo Merino Benitez',         country:'Chile',         flag:'🇨🇱' },
+      { code:'MEX', city:'Mexico City',     name:'Benito Juarez International',   country:'Mexico',        flag:'🇲🇽' },
+      { code:'CUN', city:'Cancun',          name:'Cancun International',          country:'Mexico',        flag:'🇲🇽' },
+      { code:'GDL', city:'Guadalajara',     name:'Miguel Hidalgo y Costilla',     country:'Mexico',        flag:'🇲🇽' },
+      // ─ AUSTRALIA & PACIFIC ─
+      { code:'SYD', city:'Sydney',          name:'Kingsford Smith',               country:'Australia',     flag:'🇦🇺' },
+      { code:'MEL', city:'Melbourne',       name:'Melbourne Airport',             country:'Australia',     flag:'🇦🇺' },
+      { code:'BNE', city:'Brisbane',        name:'Brisbane Airport',              country:'Australia',     flag:'🇦🇺' },
+      { code:'PER', city:'Perth',           name:'Perth Airport',                 country:'Australia',     flag:'🇦🇺' },
+      { code:'ADL', city:'Adelaide',        name:'Adelaide Airport',              country:'Australia',     flag:'🇦🇺' },
+      { code:'AKL', city:'Auckland',        name:'Auckland Airport',              country:'New Zealand',   flag:'🇳🇿' },
+      { code:'CHC', city:'Christchurch',    name:'Christchurch Airport',          country:'New Zealand',   flag:'🇳🇿' },
     ];
 
     let fromAirport = AIRPORTS[0];
@@ -2027,17 +2258,35 @@
       document.getElementById('pax-display').textContent = parts.join(', ') || '1 Adult';
     }
 
+    function setAirport(airport, side) {
+      const flag = airport.flag || '';
+      if (side === 'from') {
+        fromAirport = airport;
+        document.getElementById('from-code').textContent = airport.code;
+        document.getElementById('from-city').textContent = flag + ' ' + airport.city + ', ' + airport.country;
+        document.getElementById('from-input').value = '';
+        document.getElementById('from-suggestions').classList.remove('open');
+      } else {
+        toAirport = airport;
+        document.getElementById('to-code').textContent = airport.code;
+        document.getElementById('to-city').textContent = flag + ' ' + airport.city + ', ' + airport.country;
+        document.getElementById('to-input').value = '';
+        document.getElementById('to-suggestions').classList.remove('open');
+      }
+    }
+
     function buildSuggestions(query, containerId) {
       const box = document.getElementById(containerId);
-      const q = query.toLowerCase();
+      const q = query.toLowerCase().trim();
       const matches = AIRPORTS.filter(a =>
         a.code.toLowerCase().includes(q) ||
         a.city.toLowerCase().includes(q) ||
         a.name.toLowerCase().includes(q) ||
         a.country.toLowerCase().includes(q)
-      ).slice(0, 7);
+      ).slice(0, 8);
       box.innerHTML = matches.map(a => `
         <div class="airport-suggestion" data-code="${a.code}">
+          <span class="sug-flag">${a.flag || '✈'}</span>
           <span class="sug-code">${a.code}</span>
           <div class="sug-info">
             <div class="sug-city">${a.city}</div>
@@ -2045,31 +2294,19 @@
           </div>
           <span class="sug-country">${a.country}</span>
         </div>`).join('');
-      box.classList.toggle('open', matches.length > 0 && query.length > 0);
+      box.classList.toggle('open', matches.length > 0 && q.length > 0);
       box.querySelectorAll('.airport-suggestion').forEach(el => {
         el.addEventListener('mousedown', e => {
           e.preventDefault();
-          const code = el.dataset.code;
-          const airport = AIRPORTS.find(a => a.code === code);
-          if (containerId === 'from-suggestions') {
-            fromAirport = airport;
-            document.getElementById('from-code').textContent = airport.code;
-            document.getElementById('from-city').textContent = airport.city + ', ' + airport.country;
-            document.getElementById('from-input').value = '';
-          } else {
-            toAirport = airport;
-            document.getElementById('to-code').textContent = airport.code;
-            document.getElementById('to-city').textContent = airport.city + ', ' + airport.country;
-            document.getElementById('to-input').value = '';
-          }
-          box.classList.remove('open');
+          const airport = AIRPORTS.find(a => a.code === el.dataset.code);
+          if (airport) setAirport(airport, containerId === 'from-suggestions' ? 'from' : 'to');
         });
       });
     }
 
-    document.getElementById('from-input').addEventListener('input', e => buildSuggestions(e.target.value, 'from-suggestions'));
-    document.getElementById('to-input').addEventListener('input',   e => buildSuggestions(e.target.value, 'to-suggestions'));
-    document.getElementById('from-field').addEventListener('click', () => { document.getElementById('from-input').focus(); buildSuggestions('', 'from-suggestions'); });
+    document.getElementById('from-input').addEventListener('input', e => buildSuggestions(e.target.value || 'a', 'from-suggestions'));
+    document.getElementById('to-input').addEventListener('input',   e => buildSuggestions(e.target.value || 'a', 'to-suggestions'));
+    document.getElementById('from-field').addEventListener('click', () => { document.getElementById('from-input').focus(); buildSuggestions('a', 'from-suggestions'); });
     document.getElementById('to-field').addEventListener('click',   () => { document.getElementById('to-input').focus();   buildSuggestions('a', 'to-suggestions'); });
     document.addEventListener('click', e => {
       if (!e.target.closest('#from-field')) document.getElementById('from-suggestions').classList.remove('open');
@@ -2082,18 +2319,26 @@
       [fromAirport, toAirport] = [toAirport, fromAirport];
       if (fromAirport) {
         document.getElementById('from-code').textContent = fromAirport.code;
-        document.getElementById('from-city').textContent = fromAirport.city + ', ' + fromAirport.country;
+        document.getElementById('from-city').textContent = (fromAirport.flag || '') + ' ' + fromAirport.city + ', ' + fromAirport.country;
       } else {
         document.getElementById('from-code').textContent = '—';
-        document.getElementById('from-city').textContent = 'Where are you going?';
+        document.getElementById('from-city').textContent = 'Where are you flying from?';
       }
       if (toAirport) {
         document.getElementById('to-code').textContent = toAirport.code;
-        document.getElementById('to-city').textContent = toAirport.city + ', ' + toAirport.country;
+        document.getElementById('to-city').textContent = (toAirport.flag || '') + ' ' + toAirport.city + ', ' + toAirport.country;
       } else {
         document.getElementById('to-code').textContent = '—';
         document.getElementById('to-city').textContent = 'Where are you going?';
       }
+    });
+
+    // Popular routes quick-select
+    document.querySelectorAll('.popular-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const airport = AIRPORTS.find(a => a.code === chip.dataset.code);
+        if (airport) setAirport(airport, 'to');
+      });
     });
 
     // Trip type
