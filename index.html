@@ -25,6 +25,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
+  <!-- Three.js for 3D globe -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     /* ─── TOKENS ─────────────────────────────────────────── */
     :root {
@@ -170,15 +172,67 @@
     .hero {
       min-height: 100vh;
       background:
-        linear-gradient(135deg, rgba(27,58,107,.82) 0%, rgba(204,32,51,.75) 100%),
+        linear-gradient(135deg, rgba(18,40,80,.88) 0%, rgba(204,32,51,.65) 100%),
         url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1600&q=80') center/cover no-repeat;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-inner {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 40px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 110px 48px 64px;
+      position: relative;
+      z-index: 2;
+    }
+    .hero-globe-wrap {
+      height: 580px;
+      position: relative;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 100px 24px 60px;
-      position: relative;
+    }
+    #globe-container {
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+    }
+    #globe-container:active { cursor: grabbing; }
+    .globe-hint {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,.08);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.15);
+      color: rgba(255,255,255,.5);
+      font-size: .72rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 999px;
+      white-space: nowrap;
+      pointer-events: none;
+      letter-spacing: .05em;
+    }
+    @media (max-width: 960px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+        padding: 100px 24px 48px;
+        text-align: center;
+        gap: 16px;
+      }
+      .hero-inner .hero-actions { justify-content: center; }
+      .hero-inner .hero-stats   { justify-content: center; }
+      .hero-globe-wrap { height: 320px; }
+      .globe-hint { display: none; }
+    }
+    @media (max-width: 600px) {
+      .hero-globe-wrap { height: 260px; }
     }
     .hero::after {
       content: '';
@@ -223,14 +277,14 @@
       display: flex;
       gap: 14px;
       flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 64px;
+      justify-content: flex-start;
+      margin-bottom: 56px;
     }
     .hero-stats {
       display: flex;
-      gap: 40px;
+      gap: 36px;
       flex-wrap: wrap;
-      justify-content: center;
+      justify-content: flex-start;
       position: relative;
       z-index: 1;
     }
@@ -1392,45 +1446,58 @@
     <div class="hero-chip chip-4"><span class="chip-dot"></span>🏛 Santorini</div>
     <div class="hero-chip chip-5"><span class="chip-dot"></span>🌿 Bali</div>
 
-    <div class="hero-eyebrow">
-      <span class="dot"></span>
-      Beirut's Premier Travel Agency
-    </div>
-    <h1>
-      Your Next Adventure<br />
-      <em>Starts Here</em>
-    </h1>
-    <p class="hero-sub">
-      From sun-soaked Mediterranean escapes to hidden cultural gems — we craft journeys that exceed expectations, every time.
-    </p>
-    <div class="hero-actions">
-      <a href="#destinations" class="btn btn-primary">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-        Explore Destinations
-      </a>
-      <a href="#contact" class="btn btn-outline">Talk to an Expert</a>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <div class="num">12<span>K+</span></div>
-        <div class="label">Happy Travelers</div>
+    <div class="hero-inner">
+
+      <!-- ─ Text column ─ -->
+      <div class="hero-text">
+        <div class="hero-eyebrow">
+          <span class="dot"></span>
+          Beirut's Premier Travel Agency
+        </div>
+        <h1>
+          Your Next Adventure<br />
+          <em>Starts Here</em>
+        </h1>
+        <p class="hero-sub">
+          From sun-soaked Mediterranean escapes to hidden cultural gems — we craft journeys that exceed expectations, every time.
+        </p>
+        <div class="hero-actions">
+          <a href="#destinations" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            Explore Destinations
+          </a>
+          <a href="#contact" class="btn btn-outline">Talk to an Expert</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="num">12<span>K+</span></div>
+            <div class="label">Happy Travelers</div>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat">
+            <div class="num">80<span>+</span></div>
+            <div class="label">Destinations</div>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat">
+            <div class="num">5<span>+</span></div>
+            <div class="label">Years Experience</div>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat">
+            <div class="num">4.9<span>★</span></div>
+            <div class="label">Client Rating</div>
+          </div>
+        </div>
+      </div><!-- /.hero-text -->
+
+      <!-- ─ Globe column ─ -->
+      <div class="hero-globe-wrap">
+        <div id="globe-container"></div>
+        <div class="globe-hint">🖱 Drag to rotate</div>
       </div>
-      <div class="hero-stat-divider"></div>
-      <div class="hero-stat">
-        <div class="num">80<span>+</span></div>
-        <div class="label">Destinations</div>
-      </div>
-      <div class="hero-stat-divider"></div>
-      <div class="hero-stat">
-        <div class="num">5<span>+</span></div>
-        <div class="label">Years Experience</div>
-      </div>
-      <div class="hero-stat-divider"></div>
-      <div class="hero-stat">
-        <div class="num">4.9<span>★</span></div>
-        <div class="label">Client Rating</div>
-      </div>
-    </div>
+
+    </div><!-- /.hero-inner -->
   </section>
 
   <!-- ═══ FLIGHT SEARCH ════════════════════════════════════ -->
@@ -2428,6 +2495,203 @@
         setTimeout(() => modal.classList.add('result'), 400);
       }, 4000);
     });
+
+    // ── 3D GLOBE ─────────────────────────────────────────
+    (function initGlobe() {
+      const container = document.getElementById('globe-container');
+      if (!container || typeof THREE === 'undefined') return;
+
+      const W = container.clientWidth  || 560;
+      const H = container.clientHeight || 580;
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(W, H);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+
+      const scene  = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100);
+      camera.position.z = 2.65;
+
+      // ─ Convert lat/lon → THREE.Vector3
+      function ll(lat, lon, r) {
+        const phi   = (90 - lat) * (Math.PI / 180);
+        const theta = (lon + 180) * (Math.PI / 180);
+        return new THREE.Vector3(
+          -r * Math.sin(phi) * Math.cos(theta),
+           r * Math.cos(phi),
+           r * Math.sin(phi) * Math.sin(theta)
+        );
+      }
+
+      const R = 1.0;
+      const globe = new THREE.Group();
+
+      // ─ Globe sphere
+      const sphereMat = new THREE.MeshPhongMaterial({
+        color: 0x122850, emissive: 0x071428,
+        specular: 0x2a5299, shininess: 22,
+      });
+      globe.add(new THREE.Mesh(new THREE.SphereGeometry(R, 72, 36), sphereMat));
+
+      // ─ Grid lines
+      function gridLine(pts) {
+        const g = new THREE.BufferGeometry().setFromPoints(pts);
+        const m = new THREE.LineBasicMaterial({ color: 0x1e4a8a, transparent: true, opacity: 0.30 });
+        return new THREE.Line(g, m);
+      }
+      for (let lat = -60; lat <= 60; lat += 30) {
+        const pts = [];
+        for (let lon = 0; lon <= 361; lon += 3) pts.push(ll(lat, lon, R * 1.002));
+        globe.add(gridLine(pts));
+      }
+      for (let lon = 0; lon < 360; lon += 30) {
+        const pts = [];
+        for (let lat = -90; lat <= 90; lat += 3) pts.push(ll(lat, lon, R * 1.002));
+        globe.add(gridLine(pts));
+      }
+      scene.add(globe);
+
+      // ─ Atmosphere glow
+      const atmMat = new THREE.ShaderMaterial({
+        vertexShader: `varying vec3 vN; void main(){ vN=normalize(normalMatrix*normal); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
+        fragmentShader: `varying vec3 vN; void main(){ float i=pow(max(0.0,.72-dot(vN,vec3(0,0,1))),2.6); gl_FragColor=vec4(0.2,.52,1.0,i*.75); }`,
+        blending: THREE.AdditiveBlending, side: THREE.FrontSide,
+        transparent: true, depthWrite: false,
+      });
+      scene.add(new THREE.Mesh(new THREE.SphereGeometry(R * 1.18, 64, 64), atmMat));
+
+      // ─ Lighting
+      scene.add(new THREE.AmbientLight(0x334477, 1.1));
+      const sun = new THREE.DirectionalLight(0xffffff, 1.5);
+      sun.position.set(5, 3, 5);
+      scene.add(sun);
+      const redGlow = new THREE.PointLight(0xCC2033, 0.55, 9);
+      redGlow.position.set(-3, 1, 2);
+      scene.add(redGlow);
+
+      // ─ Destinations
+      const DESTS = [
+        { code:'BEY', lat:33.82, lon: 35.49, home:true  },
+        { code:'DXB', lat:25.25, lon: 55.36, home:false },
+        { code:'CDG', lat:48.86, lon:  2.35, home:false },
+        { code:'IST', lat:41.01, lon: 28.97, home:false },
+        { code:'LHR', lat:51.51, lon: -0.13, home:false },
+        { code:'CAI', lat:30.04, lon: 31.24, home:false },
+        { code:'BKK', lat:13.73, lon:100.52, home:false },
+        { code:'BCN', lat:41.39, lon:  2.15, home:false },
+        { code:'MLE', lat: 4.17, lon: 73.51, home:false },
+        { code:'SIN', lat: 1.35, lon:103.82, home:false },
+        { code:'NRT', lat:35.68, lon:139.69, home:false },
+        { code:'JFK', lat:40.71, lon:-74.01, home:false },
+      ];
+
+      const dotGeo  = new THREE.SphereGeometry(0.016, 8, 8);
+      const pulseRings = [];
+
+      DESTS.forEach(d => {
+        const pos = ll(d.lat, d.lon, R * 1.012);
+        const col = d.home ? 0xCC2033 : 0xffffff;
+        const dot = new THREE.Mesh(dotGeo, new THREE.MeshBasicMaterial({ color: col }));
+        dot.position.copy(pos);
+        globe.add(dot);
+
+        if (d.home) {
+          const ringMat = new THREE.MeshBasicMaterial({
+            color: 0xCC2033, side: THREE.DoubleSide, transparent: true, opacity: 0.55,
+          });
+          const ring = new THREE.Mesh(new THREE.RingGeometry(0.024, 0.038, 24), ringMat);
+          ring.position.copy(pos);
+          ring.lookAt(pos.clone().multiplyScalar(3));
+          globe.add(ring);
+          pulseRings.push(ring);
+
+          // Second outer ring
+          const ring2Mat = new THREE.MeshBasicMaterial({
+            color: 0xCC2033, side: THREE.DoubleSide, transparent: true, opacity: 0.25,
+          });
+          const ring2 = new THREE.Mesh(new THREE.RingGeometry(0.038, 0.052, 24), ring2Mat);
+          ring2.position.copy(pos);
+          ring2.lookAt(pos.clone().multiplyScalar(3));
+          globe.add(ring2);
+          pulseRings.push(ring2);
+        }
+      });
+
+      // ─ Flight arcs from BEY
+      const BEY = DESTS[0];
+      DESTS.slice(1).forEach(dest => {
+        const a   = ll(BEY.lat,  BEY.lon,  R);
+        const b   = ll(dest.lat, dest.lon, R);
+        const mid = a.clone().add(b).normalize().multiplyScalar(R * 1.5);
+        const curve = new THREE.QuadraticBezierCurve3(a, mid, b);
+        const geo   = new THREE.BufferGeometry().setFromPoints(curve.getPoints(72));
+        const mat   = new THREE.LineBasicMaterial({ color: 0xCC2033, transparent: true, opacity: 0.35 });
+        globe.add(new THREE.Line(geo, mat));
+      });
+
+      // ─ Starfield
+      const sv = [];
+      for (let i = 0; i < 1800; i++) sv.push((Math.random()-.5)*50,(Math.random()-.5)*50,(Math.random()-.5)*50);
+      const sGeo = new THREE.BufferGeometry();
+      sGeo.setAttribute('position', new THREE.Float32BufferAttribute(sv, 3));
+      scene.add(new THREE.Points(sGeo, new THREE.PointsMaterial({ color:0xffffff, size:0.055, transparent:true, opacity:0.5 })));
+
+      // ─ Initial orientation (Middle East centred)
+      globe.rotation.y = -0.62;
+      globe.rotation.x =  0.28;
+
+      // ─ Drag interaction
+      let dragging = false, px = 0, py = 0;
+      const vel = { x: 0, y: 0 };
+      renderer.domElement.addEventListener('mousedown',  e => { dragging=true; px=e.clientX; py=e.clientY; });
+      window.addEventListener('mouseup',   () => dragging = false);
+      window.addEventListener('mousemove', e => {
+        if (!dragging) return;
+        vel.x = (e.clientY - py) * .008; vel.y = (e.clientX - px) * .008;
+        px = e.clientX; py = e.clientY;
+      });
+      renderer.domElement.addEventListener('touchstart', e => { e.preventDefault(); dragging=true; px=e.touches[0].clientX; py=e.touches[0].clientY; }, { passive:false });
+      window.addEventListener('touchend',  () => dragging = false);
+      window.addEventListener('touchmove', e => {
+        if (!dragging) return;
+        vel.x = (e.touches[0].clientY - py) * .008; vel.y = (e.touches[0].clientX - px) * .008;
+        px = e.touches[0].clientX; py = e.touches[0].clientY;
+      }, { passive: true });
+
+      // ─ Resize
+      window.addEventListener('resize', () => {
+        const w = container.clientWidth, h = container.clientHeight;
+        if (!w || !h) return;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+
+      // ─ Animation loop
+      let t = 0;
+      function tick() {
+        requestAnimationFrame(tick);
+        t += 0.016;
+        if (dragging) {
+          globe.rotation.x += vel.x;
+          globe.rotation.y += vel.y;
+          vel.x *= 0.88; vel.y *= 0.88;
+        } else {
+          globe.rotation.y += 0.0016;
+          globe.rotation.x += vel.x; globe.rotation.y += vel.y;
+          vel.x *= 0.94; vel.y *= 0.94;
+        }
+        // Pulse BEY rings
+        pulseRings.forEach((r, i) => {
+          const phase = t * 1.6 + i * 0.9;
+          r.material.opacity = (i % 2 === 0 ? 0.55 : 0.22) * (0.5 + 0.5 * Math.sin(phase));
+          r.scale.setScalar(1 + 0.25 * Math.abs(Math.sin(phase * 0.5)));
+        });
+        renderer.render(scene, camera);
+      }
+      tick();
+    })();
 
     // Hero parallax on scroll
     const hero = document.querySelector('.hero');
