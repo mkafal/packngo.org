@@ -1,0 +1,12 @@
+# Ignore other project folders in this workspace
+PacknGo-App/
+PacknGo-iOS/
+outputs/
+uploads/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Node
+node_modules/
