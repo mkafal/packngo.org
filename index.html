@@ -2963,8 +2963,8 @@
   <!-- PacknGo AI Chatbot JS -->
   <script>
   (function() {
-    // ⚠️  Replace with your OpenAI API key (restrict it to packngo.org domain in OpenAI settings)
-    const OPENAI_KEY = 'YOUR_OPENAI_API_KEY';
+    // Cloudflare Worker proxy — keeps API key off the browser
+    const WORKER_URL = 'https://soft-shape-2873.moussa-kafal.workers.dev';
 
     const SYSTEM = `You are the PacknGo AI — a brilliant, modern travel expert representing Pack'nGo, Beirut's premier travel agency (IATA accredited, 5+ years, 12,000+ happy travelers, 80+ destinations).
 
@@ -3059,12 +3059,9 @@ Rules:
       }
 
       try {
-        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        const res = await fetch(WORKER_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + OPENAI_KEY
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model: 'gpt-4o-mini',
             messages: history,
