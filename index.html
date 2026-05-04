@@ -3309,16 +3309,13 @@ Rules:
     let open = false, msgCount = 0;
     let history = [{ role: 'system', content: SYSTEM }];
 
-    // Auto-open once per session after 5s
-    if (!sessionStorage.getItem('pngChatOpened')) {
-      setTimeout(() => { if (!open) openChat(); }, 5000);
-    }
+    // Auto-open on every visit after 3s
+    setTimeout(() => { if (!open) openChat(); }, 3000);
 
     function openChat() {
       open = true;
       win.classList.add('open');
       notifEl.style.display = 'none';
-      sessionStorage.setItem('pngChatOpened', '1');
       if (msgsEl.children.length === 0) greet();
     }
     function closeChat() { open = false; win.classList.remove('open'); }
